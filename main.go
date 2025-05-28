@@ -24,3 +24,4 @@ func main() {
 	useItem(Sword)
 	fmt.Printf("hello world!")
 }
+s
