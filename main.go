@@ -4,24 +4,29 @@ import "fmt"
 
 type (
 	item interface {
-		use()
+		use() error
 	}
-	sword struct{}
+	sword struct {
+		Damage int
+	}
 )
 
-func (s *sword) use() {
-	fmt.Printf("Use Sword!!")
-
+func newItem(s int) item {
+	return &sword{Damage: s}
 }
 
-func useItem(i item) {
-	i.use()
+func (s *sword) use() error {
+	fmt.Printf("Use Sword!! tack Damage %v", s.Damage)
+	return nil
+}
+
+func useItem(i item) error {
+	return i.use()
 
 }
 
 func main() {
-	Sword := sword{}
-	useItem(Sword)
-	fmt.Printf("hello world!")
+	_sword := &sword{Damage: 1}
+	useItem(_sword)
+	//fmt.Printf("hello world!")
 }
-s

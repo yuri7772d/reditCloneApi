@@ -1,2 +1,3 @@
-package controller 
-type commentController interface {}
+package controller
+
+type CommentController interface{}
