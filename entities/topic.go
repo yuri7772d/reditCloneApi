@@ -3,9 +3,9 @@ package entities
 import "time"
 
 type Topic struct {
-	Id       int
+	Id       uint64
 	Title    string
 	Picture  string
-	UserId   int
+	UserId   uint64
 	CreateAt time.Time
 }
