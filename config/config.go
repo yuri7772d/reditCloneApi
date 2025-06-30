@@ -18,10 +18,10 @@ type (
 		Database *Database
 	}
 	Server struct {
-		Port         int      `mapstructure:"port" validate:"required"`
-		AllowOrigins []string `mapstructure:"allowOrigins" validate:"required"`
-		BodyLimit    string   `mapstructure:"bodyLimit" validate:"required"`
-		Timeout      int      `mapstructure:"timeout" validate:"required"`
+		Port         int           `mapstructure:"port" validate:"required"`
+		AllowOrigins []string      `mapstructure:"allowOrigins" validate:"required"`
+		BodyLimit    string        `mapstructure:"bodyLimit" validate:"required"`
+		Timeout      time.Duration `mapstructure:"timeout" validate:"required"`
 	}
 
 	OAuth2 struct {
@@ -62,7 +62,7 @@ var (
 	once     sync.Once
 )
 
-func GetingConfig() (*Config, error) {
+func Get() (*Config, error) {
 	once.Do(func() {
 
 		viper.SetConfigName("config")

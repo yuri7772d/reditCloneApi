@@ -30,8 +30,8 @@ state:
 database:
   host: localhost
   port: 5432
-  user: postgres
+  user: root
   password: 123456
-  dbname: testdb
+  dbname: redit-clone
   sslmode: disable
   schema: public

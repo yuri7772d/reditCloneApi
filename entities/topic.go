@@ -6,43 +6,31 @@ import (
 
 type (
 	Topic struct {
-		ID       int
-		Title    string
-		Images   []string
-		createAt time.Time
+		ID        int          `gorm:"primaryKey;autoIncrement"`
+		Title     string       `gorm:"type:varchar(500);not null;"`
+		ProfileID int          `gorm:"index;not null;"`
+		Profile   Profile      `gorm:"foreignKey:ProfileID;references:ID"`
+		CreatedAt time.Time    `gorm:"type:timestamptz;default:now()"`
+		Images    []TopicImage `gorm:"foreignkey:TopicID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+		Like      TopicLike    `gorm:"foreignkey:TopicID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+		Replieds  []Replied    `gorm:"polymorphic:Parent"`
 	}
-	TopicRecord struct {
-		ID       int       `gorm:"primaryKey;autoIncrement;"`
-		Title    string    `gorm:"type:varchar(64);not null;"`
-		CreateAt time.Time `gorm:"type:timestamptz"`
+	TopicImage struct {
+		ID      int    `gorm:"primaryKey;autoIncrement"`
+		TopicID int    `gorm:"index;not null;"`
+		Image   string `gorm:"type:varchar(64);not null;"`
 	}
-	TopicImageRecord struct {
-		TopicID  int         `gorm:"type:int(64);not null;"`
-		Image    string      `gorm:"type:varchar(64);not null;"`
-		TopicRef TopicRecord `gorm:"foreignKey:TopicID;references:ID;constraint:OnDelete:CASCADE"`
+	TopicLike struct {
+		ID        int                 `gorm:"primaryKey;autoIncrement;"`
+		TopicID   int                 `gorm:"uniqueIndex;not null;"`
+		Count     int                 `gorm:"default:0"`
+		Trackings []TopicLikeTracking `gorm:"foreignkey:TopicLikeID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	}
+	TopicLikeTracking struct {
+		ID          int       `gorm:"primaryKey;autoIncrement;"`
+		ProfileID   int       `gorm:"index;not null;"`
+		Profile     Profile   `gorm:"foreignKey:ProfileID;references:ID"`
+		TopicLikeID int       `gorm:"index;not null;"`
+		CreatedAt   time.Time `gorm:"type:timestamptz;default:now()"`
 	}
 )
-
-func (TopicImageRecord) TableName() string {
-	return "topic_image"
-}
-
-func (TopicRecord) TableName() string {
-	return "topic"
-}
-
-func NewTopic(id int, title string, images []string, time time.Time) *Topic {
-	return &Topic{ID: id, Title: title, Images: images, createAt: time}
-}
-
-func (t *Topic) GetCreateAt() time.Time {
-	return t.createAt
-}
-func (t *Topic) ToRecord() (*TopicRecord, []*TopicImageRecord) {
-	imageRecInstance := make([]*TopicImageRecord, len(t.Images))
-	for i, r := range t.Images {
-		imageRecInstance[i] = &TopicImageRecord{TopicID: t.ID, Image: r}
-	}
-
-	return &TopicRecord{ID: t.ID, Title: t.Title, CreateAt: t.createAt}, imageRecInstance
-}

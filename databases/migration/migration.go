@@ -9,22 +9,42 @@ import (
 )
 
 func main() {
-	conf, _ := config.GetingConfig()
+	conf, _ := config.Get()
 	db := databases.NewPosgresDatabase(conf.Database)
 	log.Println("On migration ", conf.Database.Dbname)
+
+	ProfileMigration(db)
 	TopicMigration(db)
-	TopicLikeMigration(db)
+	LikeTopicMigration(db)
+	RepliedMigration(db)
+	RepliedLikeMigration(db)
 
 }
 
 func TopicMigration(db databases.Database) {
-	db.ConnetionGeting().Migrator().CreateTable(&entities.TopicRecord{})
-	db.ConnetionGeting().Migrator().CreateTable(&entities.TopicImageRecord{})
-	log.Printf("ok - Migration Topic Succes.")
+	db.Connet().Migrator().CreateTable(&entities.Topic{})
+	db.Connet().Migrator().CreateTable(&entities.TopicImage{})
+	log.Printf("ok - Topic succes.")
 }
-func TopicLikeMigration(db databases.Database) {
-	db.ConnetionGeting().Migrator().CreateTable(&entities.TopicLikeCountRecord{})
-	db.ConnetionGeting().Migrator().CreateTable(&entities.TopicLikeRecord{})
-	log.Printf("ok - Migration TopicLike Succes.")
+func LikeTopicMigration(db databases.Database) {
+	db.Connet().Migrator().CreateTable(&entities.TopicLike{})
+	db.Connet().Migrator().CreateTable(&entities.TopicLikeTracking{})
+	log.Printf("ok - LikeTopic succes.")
 
+}
+func ProfileMigration(db databases.Database) {
+	db.Connet().Migrator().CreateTable(&entities.Profile{})
+
+	log.Printf("ok - Profile succes.")
+
+}
+func RepliedMigration(db databases.Database) {
+	db.Connet().Migrator().CreateTable(&entities.Replied{})
+	db.Connet().Migrator().CreateTable(&entities.RepliedImage{})
+	log.Printf("ok - Replied succes.")
+}
+func RepliedLikeMigration(db databases.Database) {
+	db.Connet().Migrator().CreateTable(&entities.RepliedLike{})
+	db.Connet().Migrator().CreateTable(&entities.RepliedLikeTracking{})
+	log.Printf("ok - RepliedLike succes.")
 }
